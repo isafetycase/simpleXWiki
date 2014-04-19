@@ -1,0 +1,125 @@
+<div class="gradientfilterIE"></div>
+<div class="componentcontainer">
+<strong id="xwikicontentmenutitle" class="hidden">$services.localization.render('core.menu.content.title')</strong>
+<div class="rightmenu">
+</div>
+<div class="leftmenu">
+#if($hasEdit && !$isReadOnly)
+  ## Compute the default edit mode
+  #set($editaction = $doc.getDefaultEditMode())
+  ##
+  ## Edit menu
+  ##
+  #if($isAdvancedUser)
+    #xwikitopmenuentrystart($doc.getURL($editaction, $!languageparams) $services.localization.render('core.menu.edit') 'tmEdit' 'hasIcon')
+    #submenuitem($doc.getURL('edit', "$!{languageparams}#if ($languageparams != '')&amp;#{end}editor=wiki") $services.localization.render('core.menu.edit.wiki') 'tmEditWiki', '')
+    ## Check if the WYSIWYG supports the current document's syntax and if so add a menu entry to edit the current
+    ## document with the WYSIWYG editor.
+    #if ($services.wysiwyg.isSyntaxSupported($tdoc.syntax.toIdString()) || $tdoc.syntax.toIdString() == 'xwiki/1.0')
+      #submenuitem($doc.getURL('edit', "$!{languageparams}#if ($languageparams != '')&amp;#{end}editor=wysiwyg") $services.localization.render('core.menu.edit.wysiwyg') 'tmEditWysiwyg', '')
+    #end
+    #submenuitem($doc.getURL($editaction, "$!{languageparams}#if ($languageparams != '')&amp;#{end}editor=inline") $services.localization.render('core.menu.edit.inline') 'tmEditInline', '')
+    #submenuseparator()
+    #submenuitem($doc.getURL('edit', 'editor=rights') $services.localization.render('core.menu.edit.rights') 'tmEditRights', '')
+    #submenuitem($doc.getURL('edit', 'editor=object') $services.localization.render('core.menu.edit.object') 'tmEditObject', '')
+    #submenuitem($doc.getURL('edit', 'editor=class') $services.localization.render('core.menu.edit.class') 'tmEditClass', '')
+    #xwikitopmenuentryend()
+  #else ## !isAdvanced
+    #xwikitopmenuentry($doc.getURL($editaction, $!languageparams) $services.localization.render('core.menu.edit') 'tmEdit', 'hasIcon')
+  #end
+  #if($keyboardShortcutsEnabled)
+    <script type="text/javascript">
+    //<![CDATA[
+      shortcut.add("$services.localization.render('core.shortcuts.view.edit')",function() { location.href=$('tmEdit').down('a').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+      #if($isAdvancedUser)
+        shortcut.add("$services.localization.render('core.shortcuts.view.wiki')",function() { location.href=$('tmEditWiki').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+        shortcut.add("$services.localization.render('core.shortcuts.view.wysiwyg')",function() { location.href=$('tmEditWysiwyg').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+        shortcut.add("$services.localization.render('core.shortcuts.view.inline')",function() { location.href=$('tmEditInline').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+        shortcut.add("$services.localization.render('core.shortcuts.view.rights')",function() { location.href=$('tmEditRights').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+        shortcut.add("$services.localization.render('core.shortcuts.view.objects')",function() { location.href=$('tmEditObject').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+        #if($hasAdmin)
+          shortcut.add("$services.localization.render('core.shortcuts.view.class')",function() { location.href=$('tmEditClass').href; }, { 'type':'keypress', 'propagate':false, 'disable_in_input':true });
+        #end
+      #end
+    //]]>
+    </script>
+  #end
+#end
+## ===============================================================================================================
+## **** simpleXWiki Mod ****
+## @title           Hide export menu
+## @description     Option to hide the export menu
+## @implementation  If $hideExport is set to true, then flow around the export menu code. 
+## ===============================================================================================================
+#if(!$hideExport)
+  ## ===============================================================================================================
+  ## **** simpleXWiki Mod ****
+  ## @title           Simplify export menu
+  ## @description     Simplify the export menu to only include the pdf export.
+  ## @implementation  If $simpleExport is set to true, then use the simplified export menu instead of the normal one.
+  ##                  $exportOptions defines parameters to be passed in to the simplified export link.
+  ##                  Useful for bypassing the pdf options page.
+  ## ===============================================================================================================
+  #if($simpleExport)
+      #xwikitopmenuentry($doc.getURL('view', "$!exportOptions") $services.localization.render('core.menu.export.pdf') 'tmExportPdf', 'hasIcon')
+  #else
+    ##
+    ## Export menu
+    ##
+    #if(!$doc.isNew())
+      #xwikitopmenuentrystart('' $services.localization.render('core.menu.export') 'tmExport' '')
+      ## Preserve the document query string.
+      #submenuitem($doc.getURL('view', "xpage=pdfoptions&amp;qs=$!escapetool.url($request.getQueryString())") $services.localization.render('core.menu.export.pdf') 'tmExportPdf', '')
+      #if("$!{services.officemanager.serverState}" == "Connected")
+        #submenuitem($doc.getURL('export', "format=odt&amp;$!request.getQueryString()") $services.localization.render('core.menu.export.odt') 'tmExportOdt', '')
+      #end
+      #submenuitem($doc.getURL('export', "format=rtf&amp;$!request.getQueryString()") $services.localization.render('core.menu.export.rtf') 'tmExportRtf', '')
+      #submenuitem($doc.getURL('export', "format=html&amp;$!request.getQueryString()") $services.localization.render('core.menu.export.html') 'tmExportHtml', '')
+      #if($hasAdmin && "$!xwiki.getPlugin('package')" != '')
+        #submenuitem($doc.getURL('export', "format=xar&amp;name=$escapetool.url($doc.fullName)&amp;pages=$escapetool.url($doc.fullName)&amp;$!docvariant") $services.localization.render('core.menu.export.xar') 'tmExportXar', '')
+      #end
+      #xwikitopmenuentryend()
+    #end
+  #end
+  ## **** End simpleXWiki Mod - Simplify export menu ****
+#end
+## **** End simpleXWiki Mod - Hide export menu ****
+## ===============================================================================================================
+## **** simpleXWiki Mod ****
+## @title           Hide actions menu
+## @description     Option to hide the actions menu
+## @implementation  If $hideActions is set to true, then flow around the actions menu code
+## ===============================================================================================================
+#if(!$hideActions)
+  ##
+  ## Actions menu
+  ##
+  #if(!$doc.isNew())
+    #xwikitopmenuentrystart('' $services.localization.render('core.menu.moreactions') 'tmMoreActions' '')
+    #submenuitem($doc.getURL('view', "xpage=print&amp;$!request.getQueryString()") $services.localization.render('core.menu.preview') 'tmPrintPreview', '')
+    #submenuitem($doc.getURL('view', "viewer=code") $services.localization.render('core.menu.view.source') 'tmViewSource', '')
+    #xwikitopmenuentryend()
+    #if ($keyboardShortcutsEnabled)
+      <script type="text/javascript">
+      //<![CDATA[
+        shortcut.add("$services.localization.render('core.shortcuts.view.code')", function() {
+          location.href = $('tmViewSource').href;
+        }, {'type': 'keypress', 'propagate': false, 'disable_in_input': true });
+      //]]>
+      </script>
+    #end
+  #end
+#end
+## **** End simpleXWiki Mod - Hide actions menu ****
+## ===============================================================================================================
+## **** simpleXWiki Mod ****
+## @title           Show help link
+## @description     Displays a help link after the actions menu. Target and options can be specified through $helpPageTarget and $helpOptions.
+## @implementation  If $showHelpLink is true, then show the help link after the actions menu. $helpPageTarget and $helpOptions define the link target and options.
+## ===============================================================================================================
+#if($showHelpLink)
+    #xwikitopmenuentry($xwiki.getURL($helpPageTarget, 'view', $helpOptions) $services.localization.render('core.menu.help') 'tmPageHelp', 'hasIcon')
+#end
+## **** End simpleXWiki Mod - Show help link ****
+</div>
+</div>

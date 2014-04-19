@@ -1,0 +1,1 @@
+window.isc_useSimpleNames=false;window.isomorphicDir="${request.getContextPath()}/resources/js/smartclient/";

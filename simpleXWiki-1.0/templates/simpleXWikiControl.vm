@@ -1,0 +1,328 @@
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##| Simple XWiki Specific Code
+##|
+##| Written by: Marc Sackeli
+##|
+##| Simple XWiki offers a selection of programmable variables that simplify
+##| the display, and allow the user access to customize the lucene search engine
+##| It's design was driven by the need to provide a less complicated interface
+##| for the not so savy computer users.
+##
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+
+
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##| Macros
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+
+##|----------------------------------------------------------------------------
+##| Main.LuceneSearch Macros
+##|----------------------------------------------------------------------------
+
+##
+## customizeQuery($text)
+## Used in: 	Main.LuceneSearch
+## Input(s):	Query text
+## Output:		Modified Query
+## Function: 	Enables the customization of a search query.
+## Notes:		$text represents the search query. The macro returns the query for now, but you can add your own custom modifications
+## if you'd like.  Below is an example modification for you reference. Refer to
+## http://extensions.xwiki.org/xwiki/bin/view/Extension/Search+Application+Query+Syntax#HSearchingforfieldsinXWikiobjects
+## for information on building queries for the Lucene Search engine.
+## Example macro content:("${text}" NOT type:attachment NOT name:RandomUnsearchablePage)
+##
+#macro(customizeQuery $text)$text#end
+
+
+##|----------------------------------------------------------------------------
+##| Xwiki.Results Macros
+##|----------------------------------------------------------------------------
+
+## customizeSearchResultTitle( $searchItem )
+## Used in: 	XWiki.Results
+## Input(s): 	The search result
+## Output:		The appropriate title for the result
+## Function: 	Customize the way xwiki result title is presented. Default functionality is provided in this macro.
+##
+#macro(customizeLuceneResultTitle $itemDoc)
+#if($item.type == 'attachment')
+<a href="$xwiki.getDocument($item.getDocumentReference()).getAttachmentURL($item.filename)">$escapetool.xml($item.filename)</a>#else
+<a href="$xwiki.getURL($itemfullname)">$escapetool.xml($xwiki.getDocument($itemfullname).plainTitle)</a>#end#end
+
+
+##
+## customizeSearchResultLocation( $searchItem )
+## Used in: 	XWiki.Results
+## Input(s):	The search result
+## Output:		The modified location output
+## Function:	Customize the location bread crumbs of a search result. Default functionality is provided in this macro. 
+##
+#macro(customizeSearchResultLocation $itemDoc)
+$services.localization.render('search.item.location', [
+$escapetool.xml($itemDoc.wiki), $xwiki.getURL("${itemDoc.wiki}:Main.WebHome"),
+$escapetool.xml($itemDoc.space), $xwiki.getURL("${itemDoc.wiki}:${itemDoc.space}.WebHome"),
+$escapetool.xml($itemDoc.name), $xwiki.getURL($itemfullname)])
+#end
+
+
+##|----------------------------------------------------------------------------
+##| Xwiki.SuggestLuceneService Macros
+##|----------------------------------------------------------------------------
+
+##
+## modifySuggestQuery( "Attachments" "some query string" "some space variable")
+## Used in: 	XWiki.SuggestLuceneService
+## Input(s): 	Suggest category name, The suggest query, Desired space
+## Output: 		Query modified to search the category appropriately
+## Function: 	Currently modifies the suggest query in XWiki.SuggestLuceneService
+## Notes: 		By default, this macro returns the query unaltered. Override or modify this macro to add additional query parameters to the suggest query.
+## Usually these modifications can be done via SearchSuggestConfig; however, we desired to provide current space information to the suggest query,
+## and this cannot be neatly done via SearchSuggestConfig ($doc.space resolves to XWiki, and attemping to directly modify the url variable of the SearchSuggestSourceClass proved to be problematic).
+## In case you are interested in using narrowing your suggest query to the current space, we passed the space through a javascript variable
+## that is set in javascript.vm, which is subsequently incorporated into the query section of the suggest url in searchSuggest.js at line 148.
+##
+#macro(modifySuggestQuery $name $query $currSpace)$query#end
+
+
+##
+## customizeSuggestOutput($item)
+## Input(s): 	Suggest category name, The actual suggest result, The current space
+## Output: 		Appropriate result in the correct xml format. 
+## Used in: 	XWiki.SuggestLuceneService
+## Function:	A venue for providing an alternaive way to display suggestion results. The default functionality is replicated here,
+## although modifications may be made.
+##
+#macro(customizeSuggestOutput $categoryName $item $currSpace)
+#set($itemfullname = "${item.wiki}:${item.space}.${item.name}")
+#set($itemdoc = $xwiki.getDocument($itemfullname))  
+#if($item.type == "attachment")
+	#set($name = $item.filename)
+	#set($url = $itemdoc.getAttachmentURL($name))
+#else
+	#set($name = $itemdoc.getDisplayTitle())
+	#set($url = $itemdoc.getURL())
+#end
+<rs id="$url" info="${escapetool.xml($itemdoc.fullName)}">$escapetool.xml($name)</rs>#end
+
+
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+##| Control Variables Section
+##|----------------------------------------------------------------------------
+##|----------------------------------------------------------------------------
+
+
+##|----------------------------------------------------------------------------
+##| Page Controls
+##|----------------------------------------------------------------------------
+
+##|------------------------------------
+##| Controls for Main.LuceneSearch
+##|------------------------------------
+
+## This variable overwrites the search help text that is rendered below the search bar. Default content is used here.
+#set($searchHelp = $msg.get('search.page.bar.querytip'))
+## This variable controls the display of the the RSS link on the search page.
+#set($hideRSS = false)
+## Hides the space select option on the search page. Useful when automatically limiting the search to the current space through the customizeQuery macro.
+#set($hideSpaceSelect = false)
+
+##|------------------------------------
+##| Controls for Controls for AnnotationCode.Script JavaScriptExtension object "Annotation application"
+##|------------------------------------
+
+## Controls the addition of the pages query string onto the annotation refreshes that occur during annotation addition and the show function
+#set($addQueryString = false)
+
+
+##|----------------------------------------------------------------------------
+## Template Controls
+##|----------------------------------------------------------------------------
+
+##|------------------------------------
+##| Controls for code.vm
+##|------------------------------------
+
+## Option to disable all of code.vm
+#set($disableCodeView = false)
+
+##|------------------------------------
+##| Controls for contentmenu.vm
+##|------------------------------------
+
+## Option to hide the export menu
+#set($hideExport = false)
+## Simplify the export menu to only include the pdf export.
+#set($simpleExport = false)
+## Options to be passed in to the simplified export link. Useful for bypassing the pdf options page.
+##set($exportOptions = "format=pdf&amp;pdfcover=1&amp;pdftoc=0&amp;comments=1&amp;attachments=0")
+## Option to hide the actions menu
+#set($hideActions = false)
+## Displays a help link after the actions menu. Target and options can be specified through $helpPageTarget and $helpOptions.
+#set($showHelpLink = false)
+## Help link target
+#set($helpPageTarget = "")
+## Help link options
+#set($helpOptions = "" )
+
+##|------------------------------------
+##| Controls for contentview.vm
+##|------------------------------------
+
+## Option to hide the document title display for the page.
+#set($hideDocAreaTitle = false)
+
+##|------------------------------------
+##| Controls for docextra.vm
+##|------------------------------------
+
+## Optionally hides the document footer
+#set($hideDocFooter = true)
+
+##|------------------------------------
+##| Controls for editmeta.vm
+##|------------------------------------
+## Disable editmeta.vm under select conditions definined by $disablEditMeta
+#set($disableEditMeta = $hasProgramming)
+
+##|------------------------------------
+##| Controls for footer.vm
+##|------------------------------------
+
+## This block of velocity enables you to add custom footer content at the end of the footer. Uncomment to use.
+##define($customFooterContent)
+##Insert custom footer content here. Don't forget to use the escape tool! (e.g. $escapetool.xml("custom footer text") )
+##end
+
+##|------------------------------------
+##| Controls for global.vm
+##|------------------------------------
+
+## This variable tweaks the alt attribute of the logo.
+#set($logoalt = "Wiki Logo")
+## This variable inserts a custom title next to the logo. Consider something like a space title here. Uncomment to use.
+#*
+#define($adjLogoText)
+	<div style="float: left; padding-top: 30px; padding-left:45px; font-weight: bold; font-size: 12pt; letter-spacing:1px; text-transform:uppercase;">
+		Your title
+	</div>
+#end
+*#
+## This variable selectively hides the global search box
+#set($hideSearch = false)
+## This code block tweaks the search url used by the global search box. Useful for customing this search. Defaults to default search.
+#macro(getSearchURL)
+#if($xwiki.exists('Main.Search'))
+	$xwiki.getURL('Main.Search')#else
+	$xwiki.getURL('Main.WebSearch')#end#end
+
+##|------------------------------------
+##| Controls for hierarchy.vm
+##|------------------------------------
+## Disable the hierarchy display under select conditions defined by $hideHierarchy
+#set($hideHierarchy = false)
+
+##|------------------------------------
+##| Controls for htmlheader.vm
+##|------------------------------------
+
+## This code block allows you to customize the title of xwiki pages. Set $title appropriately in the block to change the title of the given page.
+#define($titleOverride)#end
+## This variable allows you to define the location of an apple touch icon. Uncomment to use, with default location of "applelogo.png" in the appropraite skin folder
+##set($appleLogoLocation = $xwiki.getSkinFile('applelogo.png'))
+
+##|------------------------------------
+##| Controls for javascript.vm
+##|------------------------------------
+## This variables controls the passage of a space variable to javascript that is used for the search suggest feature. Not passed by default.
+#set($jsSpaceVar = false)
+
+##|------------------------------------
+##| Controls for layoutExtraVars.vm
+##|------------------------------------
+
+## This variable enables the custom right panel check, whose logic is defined by the variable below $hasRightPanel.  This allows the user to customize whether or not a right panel shows up
+## on a page by page basis , even in the same space. You can have custom panels for every page if you define the logic appropriately.  One way to achieve this is to create an alternate "-panel"
+## page for each page you wish to have a unique right panel on, and populate it with the unique panel code. Then, for your logic check below, you can check to see if this extra -panel page exists
+## on that given page, and set $hasRightPanel to true when so.  To get the panel code from the -panel doc to the actual panel code, you can set the panels for that space to automatically pull
+## the code from the appropriate -panel document depending on what document you are viewing.
+#set($customRightPanelCheck = false)
+## This variable allows you to programmatically change whether the right panel shows up on a given page. Useful when you 
+## want panels to show up only some of the time in a given space. Just create the logic for deciding when the panels show up, 
+## Uncomment to use.
+##set($hasRightPanel = true)
+
+
+##|------------------------------------
+##| Controls for menuview.vm
+##|------------------------------------
+
+## This variable allows the hiding of all left floating menus in menu view (e.g. navigation for wiki, space, page, etc)
+#set($hideTopNavMenus = false)
+## This code block is used for specifying content to the left of the user menu
+#define( $menuviewExtras )#end
+
+
+##|------------------------------------
+##| Controls for pdfhtmlheader.vm
+##|------------------------------------
+
+#**
+ * Allows overriding of the pdftoc parameter during pdf export. Becomes useful during multipage exports,
+ * where you might want the TOC on some pages, but not on others. 
+ *
+ * Implementation: If #pdfTocOverride($pdfdoc) evaluates to false and pdftoc is not 0, then display the TOC. Otherwise, don't display it.
+ *
+ * @param page	The current page being exported.
+ *#
+#macro(pdfTocOverride $page)false#end
+
+#**
+ * Allows the display of additional pages after the pdf cover defined by #postCoverContent($tdoc).
+ * Example usage: A page for document revision history.
+ * 
+ * Implementation: If #displayPostCoverContent($tdoc) evaluates to true, then display post cover content defined by #postCoverContent($tdoc).
+ *
+ * @param tdoc	The current document being exported.
+ *#
+#macro(displayPostCoverContent $tdoc)
+false#end
+
+#**
+ * Used in conjunction with the #displayPostCoverContent (above). This macro defines the actual content to be displayed.
+ *
+ * @param tdoc	The current document being exported.
+ *#
+#macro(postCoverContent $tdoc)
+#end
+
+##|------------------------------------
+##| Controls for shortcuts.vm
+##|------------------------------------
+
+## Optionally hides the "last modified by" section of the shortcut menu
+#set($showLastMod = true)
+
+##|------------------------------------
+##| Controls for stylesheets.vm
+##|------------------------------------
+
+## This variable points to a custom css file (relative to the currently used skin directory) for the login page.
+##set($loginCSS = "login.css")
+
+##|------------------------------------
+##| Controls for xwikivars.vm
+##|------------------------------------
+
+## Ignores user preference for advanced user setting. Uses $advancedUserAllowance as the criteria instead.
+#set($advancedUserLock = false)
+## Criteria for setting isAdvancedUser to true, used in lieu of standard "usertype" check when $advancedUserLock is true.
+#set($advancedUserAllowance = true)

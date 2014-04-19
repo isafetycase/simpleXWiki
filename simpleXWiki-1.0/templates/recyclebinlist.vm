@@ -1,0 +1,33 @@
+### Show list of deleted documents
+#set($dds=$xwiki.getDeletedDocuments($tdoc.getFullName(), $tdoc.getLanguage()))
+#if($dds && ($dds.size() > 0))
+<div class="centered">
+<p>$services.localization.render('core.recyclebin.showlistmsg')</p>
+<table class="centered">
+ <thead>
+  <tr>
+   <th>$services.localization.render('core.recyclebin.deleter')</td>
+   <th>$services.localization.render('core.recyclebin.deleteDate')</td>
+   <th colspan="2">$services.localization.render('core.recyclebin.actions')</th>
+  </tr>
+ </thead>
+ <tbody>
+ #foreach($dd in $dds)
+  <tr>
+   <td>$xwiki.getUserName($dd.getDeleter())</td>
+   <td><a href="$doc.getURL("view", "viewer=recyclebin&amp;id=$dd.getId()")">$xwiki.formatDate($dd.getDate())</a></td>
+   <td>#if($dd.canUndelete()) <a href="$xwiki.getURL($tdoc.getFullName(), "undelete", "form_token=$!{services.csrf.getToken()}&amp;id=$dd.getId()")">$services.localization.render('core.recyclebin.restore')</a> #end</td>
+   <td>
+    #if($dd.canDelete())
+     <a href="$xwiki.getURL($tdoc.getFullName(), 'delete', "form_token=$!{services.csrf.getToken()}&amp;id=$dd.getId()")"
+      onclick="if (confirm('$services.localization.render('core.recyclebin.completelyDeleteConfirm')')) {this.href += '&amp;confirm=1'; return true;} return false;">
+      $services.localization.render('core.recyclebin.delete')
+     </a>
+    #end
+   </td>
+  </tr>
+ #end
+ </tbody>
+</table>
+</div>
+#end
