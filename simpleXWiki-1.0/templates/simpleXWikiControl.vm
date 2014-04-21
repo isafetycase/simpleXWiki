@@ -2,15 +2,8 @@
 ##|----------------------------------------------------------------------------
 ##|----------------------------------------------------------------------------
 ##|----------------------------------------------------------------------------
-##| Simple XWiki Specific Code
+##| simpleXWiki Control File
 ##|
-##| Written by: Marc Sackeli
-##|
-##| Simple XWiki offers a selection of programmable variables that simplify
-##| the display, and allow the user access to customize the lucene search engine
-##| It's design was driven by the need to provide a less complicated interface
-##| for the not so savy computer users.
-##
 ##|----------------------------------------------------------------------------
 ##|----------------------------------------------------------------------------
 ##|----------------------------------------------------------------------------
@@ -22,25 +15,6 @@
 ##| Macros
 ##|----------------------------------------------------------------------------
 ##|----------------------------------------------------------------------------
-
-##|----------------------------------------------------------------------------
-##| Main.LuceneSearch Macros
-##|----------------------------------------------------------------------------
-
-##
-## customizeQuery($text)
-## Used in: 	Main.LuceneSearch
-## Input(s):	Query text
-## Output:		Modified Query
-## Function: 	Enables the customization of a search query.
-## Notes:		$text represents the search query. The macro returns the query for now, but you can add your own custom modifications
-## if you'd like.  Below is an example modification for you reference. Refer to
-## http://extensions.xwiki.org/xwiki/bin/view/Extension/Search+Application+Query+Syntax#HSearchingforfieldsinXWikiobjects
-## for information on building queries for the Lucene Search engine.
-## Example macro content:("${text}" NOT type:attachment NOT name:RandomUnsearchablePage)
-##
-#macro(customizeQuery $text)$text#end
-
 
 ##|----------------------------------------------------------------------------
 ##| Xwiki.Results Macros
@@ -74,46 +48,6 @@ $escapetool.xml($itemDoc.name), $xwiki.getURL($itemfullname)])
 
 
 ##|----------------------------------------------------------------------------
-##| Xwiki.SuggestLuceneService Macros
-##|----------------------------------------------------------------------------
-
-##
-## modifySuggestQuery( "Attachments" "some query string" "some space variable")
-## Used in: 	XWiki.SuggestLuceneService
-## Input(s): 	Suggest category name, The suggest query, Desired space
-## Output: 		Query modified to search the category appropriately
-## Function: 	Currently modifies the suggest query in XWiki.SuggestLuceneService
-## Notes: 		By default, this macro returns the query unaltered. Override or modify this macro to add additional query parameters to the suggest query.
-## Usually these modifications can be done via SearchSuggestConfig; however, we desired to provide current space information to the suggest query,
-## and this cannot be neatly done via SearchSuggestConfig ($doc.space resolves to XWiki, and attemping to directly modify the url variable of the SearchSuggestSourceClass proved to be problematic).
-## In case you are interested in using narrowing your suggest query to the current space, we passed the space through a javascript variable
-## that is set in javascript.vm, which is subsequently incorporated into the query section of the suggest url in searchSuggest.js at line 148.
-##
-#macro(modifySuggestQuery $name $query $currSpace)$query#end
-
-
-##
-## customizeSuggestOutput($item)
-## Input(s): 	Suggest category name, The actual suggest result, The current space
-## Output: 		Appropriate result in the correct xml format. 
-## Used in: 	XWiki.SuggestLuceneService
-## Function:	A venue for providing an alternaive way to display suggestion results. The default functionality is replicated here,
-## although modifications may be made.
-##
-#macro(customizeSuggestOutput $categoryName $item $currSpace)
-#set($itemfullname = "${item.wiki}:${item.space}.${item.name}")
-#set($itemdoc = $xwiki.getDocument($itemfullname))  
-#if($item.type == "attachment")
-	#set($name = $item.filename)
-	#set($url = $itemdoc.getAttachmentURL($name))
-#else
-	#set($name = $itemdoc.getDisplayTitle())
-	#set($url = $itemdoc.getURL())
-#end
-<rs id="$url" info="${escapetool.xml($itemdoc.fullName)}">$escapetool.xml($name)</rs>#end
-
-
-##|----------------------------------------------------------------------------
 ##|----------------------------------------------------------------------------
 ##| Control Variables Section
 ##|----------------------------------------------------------------------------
@@ -123,17 +57,6 @@ $escapetool.xml($itemDoc.name), $xwiki.getURL($itemfullname)])
 ##|----------------------------------------------------------------------------
 ##| Page Controls
 ##|----------------------------------------------------------------------------
-
-##|------------------------------------
-##| Controls for Main.LuceneSearch
-##|------------------------------------
-
-## This variable overwrites the search help text that is rendered below the search bar. Default content is used here.
-#set($searchHelp = $msg.get('search.page.bar.querytip'))
-## This variable controls the display of the the RSS link on the search page.
-#set($hideRSS = false)
-## Hides the space select option on the search page. Useful when automatically limiting the search to the current space through the customizeQuery macro.
-#set($hideSpaceSelect = false)
 
 ##|------------------------------------
 ##| Controls for Controls for AnnotationCode.Script JavaScriptExtension object "Annotation application"
