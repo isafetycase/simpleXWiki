@@ -19,7 +19,14 @@
     #set ($loginurl = $xwiki.getURL('XWiki.XWikiLogin', 'login', "xredirect=$escapetool.url($xwiki.relativeRequestURL)"))
     #xwikitopmenuentry($!loginurl $!services.localization.render('login') 'tmLogin')
   #else
-    #set ($logouturl = $xwiki.getURL('XWiki.XWikiLogout', 'logout', "xredirect=$escapetool.url($xwiki.relativeRequestURL)"))
+    ## ===============================================================================================================
+    ## ****simpleXWiki Mod****
+    ## @title           Logout redirect
+    ## @description     This variable allows a user to specify the redirect after a logout, overiding the default functionality of redirecting to the page that the logout was called from.
+    ## @implementation  Replace the value of the xredirect paramter from $xwiki.relativeRequestURL to the value of $logoutRedirect
+    ## ===============================================================================================================
+    #set ($logouturl = $xwiki.getURL('XWiki.XWikiLogout', 'logout', "xredirect=$escapetool.url($logoutRedirect)"))
+    ## **** End simpleXWiki Mod - Logout redirect ****
     #xwikitopmenuentry($!logouturl $!services.localization.render('logout') 'tmLogout')
   #end
 #end
