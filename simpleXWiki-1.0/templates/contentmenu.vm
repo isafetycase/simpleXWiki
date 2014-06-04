@@ -61,7 +61,7 @@
   ##                  Useful for bypassing the pdf options page.
   ## ===============================================================================================================
   #if($simpleExport)
-      #xwikitopmenuentry($doc.getURL('view', "$!exportOptions") $services.localization.render('core.menu.export.pdf') 'tmExportPdf', 'hasIcon')
+      #xwikitopmenuentry($doc.getURL('export', "$!exportOptions") $services.localization.render('core.menu.export.pdf') 'tmExportPdf', 'hasIcon')
   #else
     ##
     ## Export menu
