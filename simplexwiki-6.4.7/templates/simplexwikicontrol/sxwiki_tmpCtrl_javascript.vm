@@ -1,0 +1,8 @@
+##|------------------------------------
+##| Controls for javascript.vm
+##|------------------------------------
+## This variable controls the passage of a space variable to javascript that is used for the search suggest feature. Not passed by default.
+#set($jsSpaceVar = false)
+## $addQueryString also is used in this file to set the "addQueryString" javascript var for use in the Annotations Code (see Controls for AnnotationCode.Script JavaScriptExtension object "Annotation application" above)
+## This boolean variable enables a refresh of the page (sans "#Attachment") after an attachment is deleted (interacts with modifed version of ./resources/js/xwiki/viewers/attachments.js)
+#set($refreshOnAttachDeletion = false)

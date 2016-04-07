@@ -1,0 +1,5 @@
+##|------------------------------------
+##| Controls for hierarchy.vm
+##|------------------------------------
+## Disable the hierarchy display under select conditions defined by $hideHierarchy
+#set($hideHierarchy = false)

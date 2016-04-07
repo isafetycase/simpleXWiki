@@ -1,0 +1,6 @@
+##|------------------------------------
+##| Controls for stylesheets.vm
+##|------------------------------------
+
+## This variable points to a custom css file (relative to the currently used skin directory) for the login page.
+##set($loginCSS = "login.css")

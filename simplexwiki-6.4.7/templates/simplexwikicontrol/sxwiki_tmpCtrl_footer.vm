@@ -1,0 +1,8 @@
+##|------------------------------------
+##| Controls for footer.vm
+##|------------------------------------
+
+## This block of velocity enables you to add custom footer content at the end of the footer. Uncomment to use.
+##define($customFooterContent)
+##Insert custom footer content here. Don't forget to use the escape tool! (e.g. $escapetool.xml("custom footer text") )
+##end

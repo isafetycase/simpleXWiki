@@ -1,0 +1,1 @@
+require(["jquery"],function(a){a(".log-item").each(function(b,c){var d=a(this).find(".stacktrace");if(d){d.toggle();var e=a(this).find("div");e.css({cursor:"pointer"});e.click(function(){d.toggle()})}})});

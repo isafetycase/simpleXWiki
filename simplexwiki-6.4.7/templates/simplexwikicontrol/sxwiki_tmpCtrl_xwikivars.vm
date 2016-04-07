@@ -1,0 +1,8 @@
+##|------------------------------------
+##| Controls for xwikivars.vm
+##|------------------------------------
+
+## Ignores user preference for advanced user setting. Uses $advancedUserAllowance as the criteria instead.
+#set($advancedUserLock = false)
+## Criteria for setting isAdvancedUser to true, used in lieu of standard "usertype" check when $advancedUserLock is true.
+#set($advancedUserAllowance = true)

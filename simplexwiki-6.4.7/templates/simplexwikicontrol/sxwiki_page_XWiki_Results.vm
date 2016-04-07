@@ -1,0 +1,29 @@
+##|----------------------------------------------------------------------------
+##| Xwiki.Results Macros
+##|----------------------------------------------------------------------------
+
+## customizeSearchResultTitle( $searchItem )
+## Used in: 	XWiki.Results
+## Input(s): 	The search result
+## Output:		The appropriate title for the result
+## Function: 	Customize the way xwiki result title is presented. Default functionality is provided in this macro.
+##
+#macro(customizeLuceneResultTitle $itemDoc)
+#if($item.type == 'attachment')
+<a href="$xwiki.getDocument($item.getDocumentReference()).getAttachmentURL($item.filename)">$escapetool.xml($item.filename)</a>#else
+<a href="$xwiki.getURL($itemfullname)">$escapetool.xml($xwiki.getDocument($itemfullname).plainTitle)</a>#end#end
+
+
+##
+## customizeSearchResultLocation( $searchItem )
+## Used in: 	XWiki.Results
+## Input(s):	The search result
+## Output:		The modified location output
+## Function:	Customize the location bread crumbs of a search result. Default functionality is provided in this macro. 
+##
+#macro(customizeSearchResultLocation $itemDoc)
+$services.localization.render('search.item.location', [
+$escapetool.xml($itemDoc.wiki), $xwiki.getURL("${itemDoc.wiki}:Main.WebHome"),
+$escapetool.xml($itemDoc.space), $xwiki.getURL("${itemDoc.wiki}:${itemDoc.space}.WebHome"),
+$escapetool.xml($itemDoc.name), $xwiki.getURL($itemfullname)])
+#end

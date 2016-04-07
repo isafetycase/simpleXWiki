@@ -1,0 +1,6 @@
+##|------------------------------------
+##| Controls for contentview.vm
+##|------------------------------------
+
+## Option to hide the document title display for the page.
+#set($hideDocAreaTitle = false)

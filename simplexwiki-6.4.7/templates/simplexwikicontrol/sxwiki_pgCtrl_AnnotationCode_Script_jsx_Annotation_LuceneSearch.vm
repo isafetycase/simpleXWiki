@@ -1,0 +1,6 @@
+##|------------------------------------
+##| Controls for AnnotationCode.Script JavaScriptExtension object "Annotation application"
+##|------------------------------------
+
+## Controls the addition of the pages query string onto the annotation refreshes that occur during annotation addition and the show function
+#set($addQueryString = false)

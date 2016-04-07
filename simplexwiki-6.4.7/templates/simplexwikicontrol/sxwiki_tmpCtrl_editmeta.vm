@@ -1,0 +1,5 @@
+##|------------------------------------
+##| Controls for editmeta.vm
+##|------------------------------------
+## Disable editmeta.vm under select conditions definined by $disablEditMeta
+#set($disableEditMeta = $hasProgramming)

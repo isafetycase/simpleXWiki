@@ -1,0 +1,14 @@
+##|------------------------------------
+##| Controls for layoutExtraVars.vm
+##|------------------------------------
+
+## This variable enables the custom right panel check, whose logic is defined by the variable below $hasRightPanel.  This allows the user to customize whether or not a right panel shows up
+## on a page by page basis , even in the same space. You can have custom panels for every page if you define the logic appropriately.  One way to achieve this is to create an alternate "-panel"
+## page for each page you wish to have a unique right panel on, and populate it with the unique panel code. Then, for your logic check below, you can check to see if this extra -panel page exists
+## on that given page, and set $hasRightPanel to true when so.  To get the panel code from the -panel doc to the actual panel code, you can set the panels for that space to automatically pull
+## the code from the appropriate -panel document depending on what document you are viewing.
+#set($customRightPanelCheck = false)
+## This variable allows you to programmatically change whether the right panel shows up on a given page. Useful when you 
+## want panels to show up only some of the time in a given space. Just create the logic for deciding when the panels show up, 
+## Uncomment to use.
+##set($hasRightPanel = true)

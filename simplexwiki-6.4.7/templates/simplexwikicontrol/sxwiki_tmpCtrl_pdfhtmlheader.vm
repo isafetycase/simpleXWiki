@@ -1,0 +1,32 @@
+##|------------------------------------
+##| Controls for pdfhtmlheader.vm
+##|------------------------------------
+
+#**
+ * Allows overriding of the pdftoc parameter during pdf export. Becomes useful during multipage exports,
+ * where you might want the TOC on some pages, but not on others. 
+ *
+ * Implementation: If #pdfTocOverride($pdfdoc) evaluates to false and pdftoc is not 0, then display the TOC. Otherwise, don't display it.
+ *
+ * @param page	The current page being exported.
+ *#
+#macro(pdfTocOverride $page)false#end
+
+#**
+ * Allows the display of additional pages after the pdf cover defined by #postCoverContent($tdoc).
+ * Example usage: A page for document revision history.
+ * 
+ * Implementation: If #displayPostCoverContent($tdoc) evaluates to true, then display post cover content defined by #postCoverContent($tdoc).
+ *
+ * @param tdoc	The current document being exported.
+ *#
+#macro(displayPostCoverContent $tdoc)
+false#end
+
+#**
+ * Used in conjunction with the #displayPostCoverContent (above). This macro defines the actual content to be displayed.
+ *
+ * @param tdoc	The current document being exported.
+ *#
+#macro(postCoverContent $tdoc)
+#end

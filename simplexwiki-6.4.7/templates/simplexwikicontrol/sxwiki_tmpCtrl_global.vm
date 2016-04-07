@@ -1,0 +1,21 @@
+##|------------------------------------
+##| Controls for global.vm
+##|------------------------------------
+
+## This variable tweaks the alt attribute of the logo.
+#set($logoalt = "Wiki Logo")
+## This variable inserts a custom title next to the logo. Consider something like a space title here. Uncomment to use.
+#*
+#define($adjLogoText)
+	<div style="float: left; padding-top: 30px; padding-left:45px; font-weight: bold; font-size: 12pt; letter-spacing:1px; text-transform:uppercase;">
+		Your title
+	</div>
+#end
+*#
+## This variable selectively hides the global search box
+#set($hideSearch = false)
+## This code block tweaks the search url used by the global search box. Useful for customing this search. Defaults to default search.
+#macro(getSearchURL)
+#if($xwiki.exists('Main.Search'))
+	$xwiki.getURL('Main.Search')#else
+	$xwiki.getURL('Main.WebSearch')#end#end

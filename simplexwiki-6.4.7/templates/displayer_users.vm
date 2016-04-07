@@ -1,0 +1,36 @@
+#if ($type == 'edit' || $type == 'search')
+  #set ($isMultiSelect = $field.getProperty('multiSelect').value == 1)
+  #userPicker_import($isMultiSelect)
+  #set ($id = $escapetool.xml("${prefix}${name}"))
+  #set ($class = 'suggestUsers')
+  #set ($userScope = "$!services.wiki.user.userScope")
+  #if ($userScope == 'LOCAL_AND_GLOBAL')
+    #set ($class = "$class withScope")
+  #elseif ($userScope == 'GLOBAL_ONLY')
+    #set ($class = "$class global")
+  #end
+  #if ($isMultiSelect)
+    #set ($class = "$class multipleSelection")
+  #end
+  #set ($disabled = $field.getProperty('disabled').value == 1)
+  <input type="text" id="$!id" name="$!id" value="$!escapetool.xml($value)" class="$class"
+    #if ($disabled)disabled="disabled"#end />
+#elseif ($type == 'view' || $type == 'rendered')
+  #set ($values = $value.split('\s*,\s*'))
+  #set ($selectedUsers = [])
+  #foreach ($value in $values)
+    #if ($value.length() > 0)
+      #set ($discard = $selectedUsers.add($value))
+    #end
+  #end
+  #if ($selectedUsers.size() > 0)
+    #displayUser($selectedUsers)
+  #end
+#elseif ($type == 'hidden')
+  #set($id = $escapetool.xml("${prefix}${name}"))
+  <input type="hidden" id="$!id" name="$!id" value="$!escapetool.xml($value)" />
+#else
+  ## In order for the custom displayer to be taken into account, the result of its evaluation with an unknown display
+  ## mode must not be empty. Let's output something.
+  Unknown display mode.
+#end

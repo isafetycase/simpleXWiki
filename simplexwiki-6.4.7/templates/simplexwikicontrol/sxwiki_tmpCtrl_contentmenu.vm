@@ -1,0 +1,20 @@
+##|------------------------------------
+##| Controls for contentmenu.vm
+##|------------------------------------
+
+## Option to hide the edit menu
+#set($hideEdit = false)
+## Option to hide the export menu
+#set($hideExport = false)
+## Simplify the export menu to only include the pdf export.
+#set($simpleExport = false)
+## Options to be passed in to the simplified export link. Useful for bypassing the pdf options page.
+##set($exportOptions = "format=pdf&amp;pdfcover=1&amp;pdftoc=0&amp;comments=1&amp;attachments=0")
+## Option to hide the actions menu
+#set($hideActions = false)
+## Displays a help link after the actions menu. Target and options can be specified through $helpPageTarget and $helpOptions.
+#set($showHelpLink = false)
+## Help link target
+#set($helpPageTarget = "")
+## Help link options
+#set($helpOptions = "" )

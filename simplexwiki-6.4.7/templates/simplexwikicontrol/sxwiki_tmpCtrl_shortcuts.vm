@@ -1,0 +1,6 @@
+##|------------------------------------
+##| Controls for shortcuts.vm
+##|------------------------------------
+
+## Optionally hides the "last modified by" section of the shortcut menu
+#set($showLastMod = true)

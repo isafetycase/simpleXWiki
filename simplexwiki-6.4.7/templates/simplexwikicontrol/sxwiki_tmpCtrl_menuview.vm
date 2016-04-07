@@ -1,0 +1,10 @@
+##|------------------------------------
+##| Controls for menuview.vm
+##|------------------------------------
+
+## This variable allows a user to specify the redirect after a logout, overiding the default functionality of redirecting to the page that the logout was called from.
+#set($logoutRedirect = $xwiki.relativeRequestURL)
+## This variable allows the hiding of all left floating menus in menu view (e.g. navigation for wiki, space, page, etc)
+#set($hideTopNavMenus = false)
+## This code block is used for specifying content to the left of the user menu
+#define( $menuviewExtras )#end

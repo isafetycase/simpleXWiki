@@ -1,0 +1,6 @@
+##|------------------------------------
+##| Controls for code.vm
+##|------------------------------------
+
+## Option to disable all of code.vm
+#set($disableCodeView = false)

@@ -1,0 +1,8 @@
+##|------------------------------------
+##| Controls for htmlheader.vm
+##|------------------------------------
+
+## This code block allows you to customize the title of xwiki pages. Set $title appropriately in the block to change the title of the given page.
+#define($titleOverride)#end
+## This variable allows you to define the location of an apple touch icon. Uncomment to use, with default location of "applelogo.png" in the appropraite skin folder
+##set($appleLogoLocation = $xwiki.getSkinFile('applelogo.png'))

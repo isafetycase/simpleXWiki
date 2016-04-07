@@ -1,0 +1,6 @@
+##|------------------------------------
+##| Controls for docextra.vm
+##|------------------------------------
+
+## Optionally hides the document footer
+#set($hideDocFooter = false)
