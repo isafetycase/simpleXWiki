@@ -302,6 +302,7 @@ $!menuviewExtras
     #else
       #set ($spaceIndexUrl = $xwiki.getURL($spaceIndexReference, 'view', "space=${escapetool.url($doc.space)}"))
     #end
+    #submenuitem($spaceIndexUrl $services.localization.render('core.menu.space.documentindex') 'tmSpaceDocumentIndex' '')
     #set ($hasPreviousMenuSection = true)
   #end
   #if ($hasSpaceAdmin)
